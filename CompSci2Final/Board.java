@@ -28,29 +28,34 @@ public class Board {
     }
 
     // print the board to the screen
-    public void printBoard() {
+    public String toString() {
+        String outputString = "";
+
+
         // for every row in board
         for (int i = 0; i <= board.length; i++) {
             // print the number corrisponding with a move
-            System.out.print(i+1);
+            outputString = outputString + (i+1);
             // print a space
-            System.out.print(" ");
+            outputString = outputString + " ";
         }
 
         // print an empty line
-        System.out.println();
+        outputString = outputString + "\n";
         // for every row in board
         for (int r = 0; r < board.length; r++) {
             // for every column in board
             for (int c = 0; c < board[r].length; c++) {
                 // print the value of board at the row and column
-                System.out.print(board[r][c]);
+                outputString = outputString + board[r][c];
                 // print a space
-                System.out.print(" ");
+                outputString = outputString + " ";
             }
             // print an empty line
-            System.out.println();
+            outputString = outputString + "\n";
         }
+
+        return outputString;
     }
 
     // Set a space on the board to the corresponding player's symbol
