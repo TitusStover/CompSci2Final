@@ -8,24 +8,12 @@ import java.util.Scanner;
 public class gameClient {
 
     public static void main(String[] args) {
-        String host = "localhost"; // Server address
-        int playerPort; // Port for the player
-        Scanner scanner = new Scanner(System.in);
+        System.out.println("what is the hosts ip address or machine name");
+        host = kb.nextLine();
 
-        System.out.println("Are you Player 1 or Player 2? Enter 1 or 2:");
-        int player = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
-
-        // Determine the port based on the player's choice
-        if (player == 1) {
-            playerPort = 8431;
-        } else if (player == 2) {
-            playerPort = 8432;
-        } else {
-            System.out.println("Invalid player number. Exiting...");
-            scanner.close();
-            return;
-        }
+        System.out.println("what is the hosts port");
+        port = kb.nextInt();
+        kb.nextLine();
 
         try {
             // Connect to the server

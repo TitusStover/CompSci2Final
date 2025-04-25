@@ -22,6 +22,7 @@ public class Main {
         PrintWriter outputStream = null;
         ServerSocket serverSocket1 = null;
         ServerSocket serverSocket2 = null;
+        String IPAddress = "localhost"; // Change this to the server's IP address if needed
         int player1Port = 8431;
         int player2Port = 8432;
         BufferedReader inputStream1 = null;
@@ -34,12 +35,12 @@ public class Main {
             
 
             while(true){
-                System.out.println("Waiting for Player 1 to connect on port " + player1Port + "...");
+                System.out.println("Waiting for Player 1 to connect to " + IPAddress + " on port " + player1Port + "...");
                 player1Socket = serverSocket1.accept(); // Accept Player 1 connection
                 System.out.println("Player 1 connected!");
                 inputStream1 = new BufferedReader(new InputStreamReader(player1Socket.getInputStream()));
 
-                System.out.println("Waiting for Player 2 to connect on port " + player2Port + "...");
+                System.out.println("Waiting for Player 2 to connect to " + IPAddress + " on port " + player2Port + "...");
                 player2Socket = serverSocket2.accept(); // Accept Player 2 connection
                 System.out.println("Player 2 connected!");
                 inputStream2 = new BufferedReader(new InputStreamReader(player2Socket.getInputStream()));
@@ -138,6 +139,7 @@ public class Main {
                 
                 outputStream1.println("Where do you want to go in put an intiger between 1 and 7.");
                 int move = Integer.parseInt(inputStream1.readLine());
+                move = inputStream1.nextLine();
 
                 if (move < 1 || move > 7) {
                     outputStream1.println("Your move must be a number between 1 and 7.");
@@ -160,7 +162,8 @@ public class Main {
             try {
                 outputStream2.println("Where do you want to go in put an intiger between 1 and 7.");
                 int move = Integer.parseInt(inputStream1.readLine());
-
+                move = inputStream2.nextLine();
+                
                 if (move < 1 || move > 7) {
                     outputStream2.println("Your move must be a number between 1 and 7.");
                 }
