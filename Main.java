@@ -17,9 +17,6 @@ public class Main {
     public static Socket player2Socket;
 
     public static void main(String[] args) {
-        String s;
-        Scanner inputStream = null;
-        PrintWriter outputStream = null;
         ServerSocket serverSocket1 = null;
         ServerSocket serverSocket2 = null;
         String IPAddress = "localhost"; // Change this to the server's IP address if needed
@@ -31,8 +28,6 @@ public class Main {
         try{
             serverSocket1 = new ServerSocket(player1Port); // Initialize for Player 1
             serverSocket2 = new ServerSocket(player2Port); // Initialize for Player 2
-            int winner;
-            
 
             while(true){
                 System.out.println("Waiting for Player 1 to connect to " + IPAddress + " on port " + player1Port + "...");
@@ -139,40 +134,35 @@ public class Main {
                 
                 outputStream1.println("Where do you want to go in put an intiger between 1 and 7.");
                 int move = Integer.parseInt(inputStream1.readLine());
-                move = inputStream1.nextLine();
 
                 if (move < 1 || move > 7) {
                     outputStream1.println("Your move must be a number between 1 and 7.");
+                } else {
+                    try {
+                        board.setBoardSpace(player, move);
+                    } catch (InvalidColumnException cofbe) {
+                        outputStream1.println(cofbe.getMessage());
+                        makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
+                    } 
                 }
-
-                try {
-                    board.setBoardSpace(player, move);
-                } catch (InvalidColumnException cofbe) {
-                    outputStream1.println(cofbe.getMessage());
-                    makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
-                }
-
             } catch (NumberFormatException | IOException e) {
                 outputStream1.println("Invalid input. Please enter a number between 1 and 7.");
             }
             
-           
-            
         } else {
             try {
                 outputStream2.println("Where do you want to go in put an intiger between 1 and 7.");
-                int move = Integer.parseInt(inputStream1.readLine());
-                move = inputStream2.nextLine();
+                int move = Integer.parseInt(inputStream2.readLine());
                 
                 if (move < 1 || move > 7) {
                     outputStream2.println("Your move must be a number between 1 and 7.");
-                }
-
-                try {
-                    board.setBoardSpace(player, move);
-                } catch (InvalidColumnException cofbe) {
-                    outputStream2.println(cofbe.getMessage());
-                    makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
+                } else {
+                    try {
+                        board.setBoardSpace(player, move);
+                    } catch (InvalidColumnException cofbe) {
+                        outputStream2.println(cofbe.getMessage());
+                        makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
+                    } 
                 }
 
             } catch (NumberFormatException | IOException e) {
