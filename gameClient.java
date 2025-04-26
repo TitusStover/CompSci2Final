@@ -19,9 +19,11 @@ public class gameClient {
             System.out.println("what is the hosts ip address or machine name");
             host = kb.nextLine();
 
-            System.out.println("what port do you want to port 8431 or port 8432");
-            port = kb.nextInt();
-            kb.nextLine();
+            while(port != 8431 && port != 8432){
+                System.out.println("what port do you want to port 8431 or port 8432");
+                port = kb.nextInt();
+            }
+
 
             if(port == 8431){
                 player = 1; 
@@ -41,12 +43,6 @@ public class gameClient {
             String serverMessage;
             while ((serverMessage = inputStream.readLine()) != null) {
                 System.out.println(serverMessage);
-
-                 // If the server expects input, send it
-                if (serverMessage.contains("Enter your move") || serverMessage.contains("Would you like to play again?")) {
-                    String userInput = kb.nextLine();
-                    outputStream.println(userInput);
-                }
 
                 // If the server expects input, send it
                 if (serverMessage.contains("Where do you want to go in put an intiger between 1 and 7.") || serverMessage.contains("Would you like to play again?")) {
