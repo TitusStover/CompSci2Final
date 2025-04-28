@@ -90,7 +90,8 @@ public class Main {
                         outputStream1.println("No more possible moves. Game over!");
                         outputStream2.println("No more possible moves. Game over!");
                     }
-                    System.out.println(gameOverFlag);
+
+                    System.out.println("gameOverFlag: " + gameOverFlag);
                     if(gameOverFlag != 0){
                         // ask if the player wants to play again
                         outputStream1.println("Would you like to play again?");
