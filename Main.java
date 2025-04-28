@@ -66,20 +66,24 @@ public class Main {
 
                     // while the game isn't over
                     while (gameOverFlag == 0) {
+                        System.out.println("Starting game.");
                         // if player on just moved
                         if (player == 1) {
                             player = 2;
                         } else {
                             player = 1;
                         }
+                        System.out.println("Chose player");
                         // have the current player make a move
                         makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
 
+                        System.out.println("Made move");
                         // print board
                         outputStream1.println(board.toString());
                         outputStream2.println(board.toString());
 
                         // check if the game is over
+                        System.out.println("Checking game over");
                         checkGameOver();
                     }
 
@@ -128,8 +132,10 @@ public class Main {
 
     public static void makeMove(int player, PrintWriter outputStream1, PrintWriter outputStream2, BufferedReader inputStream1, BufferedReader inputStream2) {
 
+        System.out.println("Entered make move.");
         if(player == 1){
 
+            System.out.println("Player one's turn.");
             try {
                 
                 outputStream1.println("Where do you want to go in put an intiger between 1 and 7.");
@@ -185,7 +191,5 @@ public class Main {
                 gameOverFlag = 2;
             }
         }
-
     }
-
 }
