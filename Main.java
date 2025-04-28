@@ -73,9 +73,7 @@ public class Main {
                             player = 1;
                         }
                         // have the current player make a move
-                        System.out.println("befor");
                         makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
-                        System.out.println("After");
 
                         // print board
                         outputStream1.println(board.toString());
@@ -92,31 +90,33 @@ public class Main {
                         outputStream1.println("No more possible moves. Game over!");
                         outputStream2.println("No more possible moves. Game over!");
                     }
-
-                    // ask if the player wants to play again
-                    outputStream1.println("Would you like to play again?");
-                    outputStream2.println("Would you like to play again?");
-
-                    //reads both clients for their answer
-                    String response1 = inputStream1.readLine();
-                    String response2 = inputStream2.readLine();
-
-                    //checks to see if player one dosn't answer yes or no
-                    while (!response1.equalsIgnoreCase("no") || !response1.equalsIgnoreCase("yes")){
+                    System.out.println(gameOverFlag);
+                    if(gameOverFlag != 0){
+                        // ask if the player wants to play again
                         outputStream1.println("Would you like to play again?");
-                        response1 = inputStream1.readLine();
-                    }
-
-                    //checks to see if player two dosn't answer yes or no
-                    while (!response2.equalsIgnoreCase("no") || !response2.equalsIgnoreCase("yes")){
                         outputStream2.println("Would you like to play again?");
-                        response2 = inputStream2.readLine();
+
+                        //reads both clients for their answer
+                        String response1 = inputStream1.readLine();
+                        String response2 = inputStream2.readLine();
+
+                        //checks to see if player one dosn't answer yes or no
+                        while (!response1.equalsIgnoreCase("no") && !response1.equalsIgnoreCase("yes")){
+                            outputStream1.println("Would you like to play again?");
+                            response1 = inputStream1.readLine();
+                        }
+
+                        //checks to see if player two dosn't answer yes or no
+                        while (!response2.equalsIgnoreCase("no") && !response2.equalsIgnoreCase("yes")){
+                            outputStream2.println("Would you like to play again?");
+                            response2 = inputStream2.readLine();
+                        }
+                        
+                        //if both players answer no the code will finish if yes the game will start again
+                        if (response1.equalsIgnoreCase("no") || response2.equalsIgnoreCase("no")) {
+                            playAgain = false;
+                        } 
                     }
-                    
-                    //if both players answer no the code will finish if yes the game will start again
-                    if (response1.equalsIgnoreCase("no") || response2.equalsIgnoreCase("no")) {
-                        playAgain = false;
-                    } 
                 }
             }
 
