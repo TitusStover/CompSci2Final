@@ -15,7 +15,7 @@ public class Main {
     public static int gameOverFlag;
     public static Socket player1Socket;
     public static Socket player2Socket;
-    
+
     public static void main(String[] args) {
         ServerSocket serverSocket1 = null;
         ServerSocket serverSocket2 = null;
@@ -100,10 +100,9 @@ public class Main {
                     if(gameOverFlag != 0){
                         // ask if the player wants to play again
                         outputStream1.println("Would you like to play again?");
-                        outputStream2.println("Would you like to play again?");
-
-                        //reads both clients for their answer
                         String response1 = inputStream1.readLine();
+
+                        outputStream2.println("Would you like to play again?");
                         String response2 = inputStream2.readLine();
 
                         //checks to see if player one dosn't answer yes or no
