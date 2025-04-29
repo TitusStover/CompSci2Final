@@ -1,7 +1,10 @@
 import java.util.Scanner;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -153,8 +156,8 @@ public class Main {
                         outputStream1.println(cofbe.getMessage());
                         makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
                     } 
-                } else{
-                    
+                } else {
+                    WritingBoardToBinary(outputStream1, outputStream2);
                 }
             } catch (NumberFormatException | IOException e) {
                 outputStream1.println("Invalid input. Please enter a number between 1 and 7.");
@@ -199,5 +202,28 @@ public class Main {
                 gameOverFlag = 2;
             }
         }
+    }
+
+    public static void WritingBoardToBinary(PrintWriter outputStream1, PrintWriter outputStream2){
+        try{
+            FileOutputStream fos = new FileOutputStream("saveFile.obj", false);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(board.toString());
+            fos = new FileOutputStream("saveFile.obj", true);
+            
+            oos.writeObject(player);
+
+            oos.close();
+            outputStream1.println("The game has been saved 🥔");
+            outputStream2.println("The game has been saved 🥔");
+
+
+        } catch (FileNotFoundException fnfe) {
+            System.out.println(fnfe.getMessage());
+        }  catch (IOException  ioe) {
+            System.out.println(ioe.getMessage());
+        }
+
     }
 }
