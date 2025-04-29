@@ -15,6 +15,7 @@ public class Main {
     public static int gameOverFlag;
     public static Socket player1Socket;
     public static Socket player2Socket;
+    
     public static void main(String[] args) {
         ServerSocket serverSocket1 = null;
         ServerSocket serverSocket2 = null;
