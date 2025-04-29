@@ -138,18 +138,23 @@ public class Main {
             System.out.println("Player one's turn.");
             try {
                 
-                outputStream1.println("Where do you want to go in put an intiger between 1 and 7.");
+                outputStream1.println("Where do you want to go in put an intiger between 1 and 7. \n If you wanted to save the game type (9).");
                 int move = Integer.parseInt(inputStream1.readLine());
 
                 if (move < 1 || move > 7) {
-                    outputStream1.println("Your move must be a number between 1 and 7.");
-                } else {
+                    if( move != 9){
+                        outputStream1.println("Your move must be a number between 1 and 7. \n If you want to save type (9.)");
+                        move = Integer.parseInt(inputStream1.readLine());
+                    }
+                } else if( move != 9){
                     try {
                         board.setBoardSpace(player, move);
                     } catch (InvalidColumnException cofbe) {
                         outputStream1.println(cofbe.getMessage());
                         makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
                     } 
+                } else{
+                    
                 }
             } catch (NumberFormatException | IOException e) {
                 outputStream1.println("Invalid input. Please enter a number between 1 and 7.");
@@ -157,11 +162,14 @@ public class Main {
             
         } else {
             try {
-                outputStream2.println("Where do you want to go in put an intiger between 1 and 7.");
+                outputStream2.println("Where do you want to go in put an intiger between 1 and 7. \n If you wanted to save the game type (9).");
                 int move = Integer.parseInt(inputStream2.readLine());
-                
+
                 if (move < 1 || move > 7) {
-                    outputStream2.println("Your move must be a number between 1 and 7.");
+                    if( move != 9){
+                        outputStream2.println("Your move must be a number between 1 and 7. \n If you want to save type (9.)");
+                        move = Integer.parseInt(inputStream2.readLine());
+                    }
                 } else {
                     try {
                         board.setBoardSpace(player, move);
@@ -172,7 +180,7 @@ public class Main {
                 }
 
             } catch (NumberFormatException | IOException e) {
-                outputStream1.println("Invalid input. Please enter a number between 1 and 7.");
+                outputStream2.println("Invalid input. Please enter a number between 1 and 7.");
             }
         }
     }
