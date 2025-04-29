@@ -22,7 +22,7 @@ public class Main {
     public static void main(String[] args) {
         ServerSocket serverSocket1 = null;
         ServerSocket serverSocket2 = null;
-        String IPAddress = "localhost"; // Change this to the server's IP address if needed
+        String IPAddress = "10.12.2.95"; // Change this to the server's IP address if needed
         int player1Port = 8431;
         int player2Port = 8432;
         BufferedReader inputStream1 = null;
@@ -149,15 +149,16 @@ public class Main {
                         outputStream1.println("Your move must be a number between 1 and 7. \n If you want to save type (9.)");
                         move = Integer.parseInt(inputStream1.readLine());
                     }
-                } else if( move != 9){
+                } else if( move == 9){
+                    WritingBoardToBinary(outputStream1, outputStream2);
+                    makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
+                } else {
                     try {
                         board.setBoardSpace(player, move);
                     } catch (InvalidColumnException cofbe) {
                         outputStream1.println(cofbe.getMessage());
                         makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
                     } 
-                } else {
-                    WritingBoardToBinary(outputStream1, outputStream2);
                 }
             } catch (NumberFormatException | IOException e) {
                 outputStream1.println("Invalid input. Please enter a number between 1 and 7.");
@@ -170,12 +171,13 @@ public class Main {
 
                 if (move < 1 || move > 7) {
                     if( move != 9){
-                        outputStream2.println("Your move must be a number between 1 and 7. \n If you want to save type (9.)");
+                        outputStream2.println("Your move must be a number between 1 and 7. \n If you want to save type (9).");
                         move = Integer.parseInt(inputStream2.readLine());
                     }
                 } else {
                     try {
                         board.setBoardSpace(player, move);
+                        makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
                     } catch (InvalidColumnException cofbe) {
                         outputStream2.println(cofbe.getMessage());
                         makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
@@ -183,7 +185,7 @@ public class Main {
                 }
 
             } catch (NumberFormatException | IOException e) {
-                outputStream2.println("Invalid input. Please enter a number between 1 and 7.");
+                outputStream2.println("Invalid input. Please enter a number between 1 and 7. \\n If you want to save type (9).");
             }
         }
     }
