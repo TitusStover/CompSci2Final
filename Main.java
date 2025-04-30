@@ -215,7 +215,7 @@ public class Main {
             fos = new FileOutputStream("saveFile.obj", true);
             
             oos.writeObject(player);
-
+            fos.close();
             oos.close();
             outputStream1.println("The game has been saved 🥔");
             outputStream2.println("The game has been saved 🥔");
