@@ -18,7 +18,7 @@ public class gameClient {
 
             // Read the server's message
             String serverMessage = input.readLine();
-            if (serverMessage.startsWith("REDIRECT")) {
+            if (serverMessage.startsWith("REDIRECTING YOU TO ")) {
                 int newPort = Integer.parseInt(serverMessage.split(" ")[1]);
                 System.out.println("Redirecting to port: " + newPort);
 
