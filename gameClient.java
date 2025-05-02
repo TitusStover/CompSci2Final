@@ -25,6 +25,8 @@ public class gameClient {
                 System.out.println("Redirecting to port: " + newPort);
 
                 // Update a variable or reconnect to the new port
+                System.out.println("serverIP: " + serverIP + "\n" +
+                                   "newPort: " + newPort);
                 try (Socket newSocket = new Socket(serverIP, newPort);
                      BufferedReader inputStream = new BufferedReader(new InputStreamReader(newSocket.getInputStream()));
                      PrintWriter outputStream = new PrintWriter(new DataOutputStream(newSocket.getOutputStream()), true)) {
