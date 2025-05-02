@@ -37,8 +37,8 @@ public class gameClient {
                         System.out.println(newServerMessage);
 
                         // If the server expects input, send it
-                        if (newServerMessage.contains("Where do you want to go in put an intiger between 1 and 7.") ||
-                            newServerMessage.contains("Would you like to play again?")) {
+                        if (newServerMessage.contains("Where do you want to move? (1-7)") ||
+                            newServerMessage.contains("Do you want to play again? (yes/no)")) {
                             String userInput = kb.nextLine();
                             outputStream.println(userInput);
                         }
