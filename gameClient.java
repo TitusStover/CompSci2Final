@@ -8,9 +8,11 @@ import java.util.Scanner;
 public class gameClient {
 
     public static void main(String[] args) {
-        String serverIP = "10.12.2.95"; // Server IP
+        String serverIP = ""; // Server IP
         int mainPort = 8430; // Main server port
         Scanner kb = new Scanner(System.in); // Initialize Scanner for user input
+        System.out.println("whats the servers ip or machine name");
+        serverIP = kb.nextLine();
 
         try (Socket socket = new Socket(serverIP, mainPort); // Connect to the main server
              BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
