@@ -20,115 +20,156 @@ public class Main {
     public static Socket player2Socket;
 
     public static void main(String[] args) {
+        ServerSocket mainServerSocket = null;
         ServerSocket serverSocket1 = null;
         ServerSocket serverSocket2 = null;
         String IPAddress = "10.12.2.95"; // Change this to the server's IP address if needed
+        int mainPort = 8430; // Main port for initial connections
         int player1Port = 8431;
         int player2Port = 8432;
         BufferedReader inputStream1 = null;
         BufferedReader inputStream2 = null;
+        PrintWriter outputStream1 = null;
+        PrintWriter outputStream2 = null;
 
-        try{
-            serverSocket1 = new ServerSocket(player1Port); // Initialize for Player 1
-            serverSocket2 = new ServerSocket(player2Port); // Initialize for Player 2
+        try {
+            mainServerSocket = new ServerSocket(mainPort); // Main port for initial connections
+            serverSocket1 = new ServerSocket(player1Port); // Port for Player 1
+            serverSocket2 = new ServerSocket(player2Port); // Port for Player 2
 
-            while(true){
-                System.out.println("Waiting for Player 1 to connect to " + IPAddress + " on port " + player1Port + "...");
-                player1Socket = serverSocket1.accept(); // Accept Player 1 connection
-                System.out.println("Player 1 connected!");
-                inputStream1 = new BufferedReader(new InputStreamReader(player1Socket.getInputStream()));
+            System.out.println("Server is running on " + IPAddress + " and listening on port " + mainPort);
 
-                System.out.println("Waiting for Player 2 to connect to " + IPAddress + " on port " + player2Port + "...");
-                player2Socket = serverSocket2.accept(); // Accept Player 2 connection
-                System.out.println("Player 2 connected!");
-                inputStream2 = new BufferedReader(new InputStreamReader(player2Socket.getInputStream()));
+            while (true) {
+                System.out.println("Waiting for a new player to connect...");
+                Socket tempSocket = mainServerSocket.accept(); // Accept initial connection
+                System.out.println("A new player connected!");
 
-                PrintWriter outputStream1 = new PrintWriter(new DataOutputStream(player1Socket.getOutputStream()), true);
-                PrintWriter outputStream2 = new PrintWriter(new DataOutputStream(player2Socket.getOutputStream()), true);
-                
-                // While both want to play again, loop
-                boolean playAgain = true;
-                while (playAgain) {
+                PrintWriter tempOutput = new PrintWriter(tempSocket.getOutputStream(), true);
 
-                    //output welcome line on both clients
-                    outputStream1.println("Welcome to Connect Four!");
-                    outputStream2.println("Welcome to Connect Four!");
+                if (player1Socket == null) {
+                    // Assign to Player 1
+                    tempOutput.println("REDIRECT " + player1Port);
+                    tempSocket.close();
+                    player1Socket = serverSocket1.accept(); // Wait for Player 1 to reconnect
+                    outputStream1 = new PrintWriter(player1Socket.getOutputStream(), true);
+                    outputStream1.println("You are player 1");
+                } else if (player2Socket == null) {
+                    // Assign to Player 2
+                    tempOutput.println("REDIRECT " + player2Port);
+                    tempSocket.close();
+                    player2Socket = serverSocket2.accept(); // Wait for Player 2 to reconnect
+                    outputStream2 = new PrintWriter(player2Socket.getOutputStream(), true);
+                    outputStream2.println("You are player 2");
+                } else {
+                    // Server is full
+                    tempOutput.println("SERVER_FULL");
+                    tempSocket.close();
+                    System.out.println("Server is full. Connection rejected.");
+                }
 
-                    //reset the board for the game
-                    board.prepareBoard();
-                    // Introduce the game
-                    outputStream1.println("Player One will be X's, Player Two will be O's");
-                    outputStream2.println("Player One will be X's, Player Two will be O's");
+                if (player1Socket != null && player2Socket != null) {
+                    // Start the game logic when both players are connected
+                    handleGame(player1Socket, player2Socket);
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
 
-                    // set player and gameOver
-                    player = 0;
-                    gameOverFlag = 0;
+    public static void handleGame(Socket player1Socket, Socket player2Socket) {
+        BufferedReader inputStream1 = null;
+        BufferedReader inputStream2 = null;
+        PrintWriter outputStream1 = null;
+        PrintWriter outputStream2 = null;
 
-                    // print the board
+        try {
+            inputStream1 = new BufferedReader(new InputStreamReader(player1Socket.getInputStream()));
+            inputStream2 = new BufferedReader(new InputStreamReader(player2Socket.getInputStream()));
+            outputStream1 = new PrintWriter(player1Socket.getOutputStream(), true);
+            outputStream2 = new PrintWriter(player2Socket.getOutputStream(), true);
+
+            // While both want to play again, loop
+            boolean playAgain = true;
+            while (playAgain) {
+
+                //output welcome line on both clients
+                outputStream1.println("Welcome to Connect Four!");
+                outputStream2.println("Welcome to Connect Four!");
+
+                //reset the board for the game
+                board.prepareBoard();
+                // Introduce the game
+                outputStream1.println("Player One will be X's, Player Two will be O's");
+                outputStream2.println("Player One will be X's, Player Two will be O's");
+
+                // set player and gameOver
+                player = 0;
+                gameOverFlag = 0;
+
+                // print the board
+                outputStream1.println(board.toString());
+                outputStream2.println(board.toString());
+
+                // while the game isn't over
+                while (gameOverFlag == 0) {
+                    System.out.println("Starting game.");
+                    // if player on just moved
+                    if (player == 1) {
+                        player = 2;
+                    } else {
+                        player = 1;
+                    }
+                    System.out.println("Chose player");
+                    // have the current player make a move
+                    makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
+
+                    System.out.println("Made move");
+                    // print board
                     outputStream1.println(board.toString());
                     outputStream2.println(board.toString());
 
-                    // while the game isn't over
-                    while (gameOverFlag == 0) {
-                        System.out.println("Starting game.");
-                        // if player on just moved
-                        if (player == 1) {
-                            player = 2;
-                        } else {
-                            player = 1;
-                        }
-                        System.out.println("Chose player");
-                        // have the current player make a move
-                        makeMove(player, outputStream1, outputStream2, inputStream1, inputStream2);
+                    // check if the game is over
+                    System.out.println("Checking game over");
+                    checkGameOver();
+                }
 
-                        System.out.println("Made move");
-                        // print board
-                        outputStream1.println(board.toString());
-                        outputStream2.println(board.toString());
+                if (gameOverFlag == 1) { // a player won the game
+                    outputStream1.println("Player " + player + " won the game!");
+                    outputStream2.println("Player " + player + " won the game!");
+                } else if (gameOverFlag == 2) { // the game was tied
+                    outputStream1.println("No more possible moves. Game over!");
+                    outputStream2.println("No more possible moves. Game over!");
+                }
 
-                        // check if the game is over
-                        System.out.println("Checking game over");
-                        checkGameOver();
-                    }
+                System.out.println("gameOverFlag: " + gameOverFlag);
+                if(gameOverFlag != 0){
+                    // ask if the player wants to play again
+                    outputStream1.println("Would you like to play again?");
+                    String response1 = inputStream1.readLine();
 
-                    if (gameOverFlag == 1) { // a player won the game
-                        outputStream1.println("Player " + player + " won the game!");
-                        outputStream2.println("Player " + player + " won the game!");
-                    } else if (gameOverFlag == 2) { // the game was tied
-                        outputStream1.println("No more possible moves. Game over!");
-                        outputStream2.println("No more possible moves. Game over!");
-                    }
+                    outputStream2.println("Would you like to play again?");
+                    String response2 = inputStream2.readLine();
 
-                    System.out.println("gameOverFlag: " + gameOverFlag);
-                    if(gameOverFlag != 0){
-                        // ask if the player wants to play again
+                    //checks to see if player one dosn't answer yes or no
+                    while (!response1.equalsIgnoreCase("no") && !response1.equalsIgnoreCase("yes")){
                         outputStream1.println("Would you like to play again?");
-                        String response1 = inputStream1.readLine();
-
-                        outputStream2.println("Would you like to play again?");
-                        String response2 = inputStream2.readLine();
-
-                        //checks to see if player one dosn't answer yes or no
-                        while (!response1.equalsIgnoreCase("no") && !response1.equalsIgnoreCase("yes")){
-                            outputStream1.println("Would you like to play again?");
-                            response1 = inputStream1.readLine();
-                        }
-
-                        //checks to see if player two dosn't answer yes or no
-                        while (!response2.equalsIgnoreCase("no") && !response2.equalsIgnoreCase("yes")){
-                            outputStream2.println("Would you like to play again?");
-                            response2 = inputStream2.readLine();
-                        }
-                        
-                        //if both players answer no the code will finish if yes the game will start again
-                        if (response1.equalsIgnoreCase("no") || response2.equalsIgnoreCase("no")) {
-                            playAgain = false;
-                        } 
+                        response1 = inputStream1.readLine();
                     }
+
+                    //checks to see if player two dosn't answer yes or no
+                    while (!response2.equalsIgnoreCase("no") && !response2.equalsIgnoreCase("yes")){
+                        outputStream2.println("Would you like to play again?");
+                        response2 = inputStream2.readLine();
+                    }
+                    
+                    //if both players answer no the code will finish if yes the game will start again
+                    if (response1.equalsIgnoreCase("no") || response2.equalsIgnoreCase("no")) {
+                        playAgain = false;
+                    } 
                 }
             }
-
-        }catch(IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
