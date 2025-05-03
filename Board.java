@@ -1,6 +1,6 @@
-import java.util.Scanner;
+import java.io.Serializable;
 
-public class Board {
+public class Board implements Serializable {
     private static char[][] board = new char[6][7];
 
     public Board() {
@@ -28,7 +28,7 @@ public class Board {
     }
 
     // print the board to the screen
-    public String toString() {
+    @Override public String toString() {
         String outputString = "";
 
 
@@ -138,20 +138,26 @@ public class Board {
                 // if the space at [r][c] is not empty
                 if(board[r][c] != '-'){
                     // if the four diagonal spaces starting at [r][c] are the same
-                    if(board[r][c] == board[r-1][c-1] && board[r-1][c-1] == board[r-2][c-2] && board[r-2][c-2] == board[r-3][c-3]){
-                        // return a diagonal winner
-                        throw new GameEndException("The game was won!", true);
+                    if(r-1 > 0 && c-1 > 0 && r-2 > 0 && c-2 > 0 && r-3 > 0 && c-3 > 0 && r-1 < 6 && r-2 < 6 && r-3 < 6 && c-1 < 7 && c-2 < 7 && c-3 < 7){
+                        if(board[r][c] == board[r-1][c-1] && board[r-1][c-1] == board[r-2][c-2] && board[r-2][c-2] == board[r-3][c-3]){
+                            // return a diagonal winner
+                            throw new GameEndException("The game was won!", true);
+                        }
                     }
+                    
                 }
             }
             // goes through the columns until (c+3) is greater than 6
             for(int c = 0; (c+3) <= 6; c++){
                 if(board[r][c] != '-'){ // if board at r and c is not empty
                     // if the next four diagonal spaces are the same
-                    if(board[r][c] == board[r-1][c+1] && board[r-1][c+1] == board[r-2][c+2] && board[r-2][c+2] == board[r-3][c+3]){
-                        // return a diagonal win
-                        throw new GameEndException("The game was won!", true);
+                    if(r-1 > 0 && c-1 > 0 && r-2 > 0 && c-2 > 0 && r-3 > 0 && c-3 > 0 && r-1 < 6 && r-2 < 6 && r-3 < 6 && c-1 < 7 && c-2 < 7 && c-3 < 7){
+                        if(board[r][c] == board[r-1][c+1] && board[r-1][c+1] == board[r-2][c+2] && board[r-2][c+2] == board[r-3][c+3]){
+                            // return a diagonal win
+                            throw new GameEndException("The game was won!", true);
+                        }
                     }
+                    
                 }
             }
         }
@@ -171,6 +177,7 @@ public class Board {
                     spaceIsEmpty[r][c] = false;
                 } else {
                     spaceIsEmpty[r][c] = true;
+
                 }
             }
         }
@@ -178,7 +185,7 @@ public class Board {
         for(int r = 0; r < spaceIsEmpty.length; r++){
             // for every column in board
             for(int c = 0; c < spaceIsEmpty[r].length; c++){
-                if(spaceIsEmpty[r][c] == true) { // if there is an empty space
+                if(spaceIsEmpty[r][c] == false) { // if there is an empty space
                     boardIsFull = false;
                     break;
                 }
