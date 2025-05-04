@@ -253,31 +253,57 @@ public static SaveGame saver = new SaveGame();
 
     }
     // playAgain method - asks users if they want to play again in order (player 1 then player 2) 
-    public static boolean playAgain(){
+    public static boolean playAgain() {
         outputStream1.println("Do you want to play again? (yes/no)");
         outputStream2.println("Do you want to play again? (yes/no)");
 
-        try{
+        try {
             String player1Response = inputStream1.readLine();
             String player2Response = inputStream2.readLine();
-            if(player1Response.equalsIgnoreCase("yes") && player2Response.equalsIgnoreCase("yes")){
+
+            // Check if both responses are invalid
+            if (!player1Response.equalsIgnoreCase("yes") && !player1Response.equalsIgnoreCase("no") &&
+                !player2Response.equalsIgnoreCase("yes") && !player2Response.equalsIgnoreCase("no")) {
+
+                outputStream1.print("\033[H\033[2J");
+                outputStream2.print("\033[H\033[2J");
+
+                outputStream1.println("Please provide a valid answer (yes/no).");
+                outputStream2.println("Please provide a valid answer (yes/no).");
+                return playAgain(); // Recursively call playAgain to prompt again
+            }
+
+            // Check if both players want to play again
+            if (player1Response.equalsIgnoreCase("yes") && player2Response.equalsIgnoreCase("yes")) {
                 return true;
             } else {
                 return false;
             }
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
             return false;
         }
-        
     }
 
     public static void continueGame() {
+
         outputStream1.println("Do you want to continue saved game? (yes/no)");
         outputStream2.println("Do you want to continue saved game? (yes/no)");
         try {
             String player1Response = inputStream1.readLine();
             String player2Response = inputStream2.readLine();
+
+            if (!player1Response.equalsIgnoreCase("yes") && !player1Response.equalsIgnoreCase("no") &&
+                !player2Response.equalsIgnoreCase("yes") && !player2Response.equalsIgnoreCase("no")) {
+
+                outputStream1.print("\033[H\033[2J");
+                outputStream2.print("\033[H\033[2J");
+
+                outputStream1.println("Please provide a valid answer.");
+                outputStream2.println("Please provide a valid answer.");
+                continueGame(); // Recursively call playAgain to prompt again
+            }
+
             if (player1Response.equalsIgnoreCase("yes") && player2Response.equalsIgnoreCase("yes")) {
                 GameState state = saver.loadGame();
                 if (state != null) {
@@ -294,6 +320,7 @@ public static SaveGame saver = new SaveGame();
                 board = new Board();
                 board.prepareBoard();
             }
+        
         } catch (IOException ioe) {
             board = new Board();
             board.prepareBoard();
