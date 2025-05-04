@@ -38,12 +38,8 @@ public class gameClient {
 
                         // If the server expects input, send it
                         if (newServerMessage.contains("Where do you want to move? (1-7)") ||
-<<<<<<< HEAD
                             newServerMessage.contains("Do you want to play again? (yes/no)") ||
                             newServerMessage.contains("Do you want to continue saved game? (yes/no)")) {
-=======
-                            newServerMessage.contains("Do you want to play again? (yes/no)")) {
->>>>>>> 36c7d70b40073052ab40d30f9a8169c2383b00e9
                             String userInput = kb.nextLine();
                             outputStream.println(userInput);
                         }

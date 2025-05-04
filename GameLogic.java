@@ -16,9 +16,9 @@ import java.net.ServerSocket;
 public class GameLogic {
 // player, currentMove and board are public variables
 
-public static int player;
+public static int player = 1;
 public static int currentMove;
-public static Board board;
+public static Board board = new Board();
 public static Socket tempSocket;
 public static Socket player1Socket;
 public static Socket player2Socket;
@@ -44,6 +44,8 @@ public static SaveGame saver = new SaveGame();
 
         connect();
 
+        outputStream1.print("\033[H\033[2J");
+        outputStream2.print("\033[H\033[2J");
         outputStream1.println("Welcome to Connect Four! \nYou're Player 1. You will be X.");
         outputStream2.println("Welcome to Connect Four! \nYou're Player 2. You will be O.");
 
@@ -273,22 +275,30 @@ public static SaveGame saver = new SaveGame();
     public static void continueGame() {
         outputStream1.println("Do you want to continue saved game? (yes/no)");
         outputStream2.println("Do you want to continue saved game? (yes/no)");
-        try{
+        try {
             String player1Response = inputStream1.readLine();
             String player2Response = inputStream2.readLine();
-            if(player1Response.equalsIgnoreCase("yes") && player2Response.equalsIgnoreCase("yes")){
-                board = saver.retrieveGameBoard();
-                player = saver.retrieveGamePlayer();
+            if (player1Response.equalsIgnoreCase("yes") && player2Response.equalsIgnoreCase("yes")) {
+                GameState state = saver.loadGame();
+                if (state != null) {
+                    board = state.getBoard();
+                    player = state.getPlayer();
+                    System.out.println("Loaded Player: " + player);
+                    System.out.println("Loaded Board:\n" + board);
+                } else {
+                    System.out.println("No saved game found. Starting a new game.");
+                    board = new Board();
+                    board.prepareBoard();
+                }
             } else {
                 board = new Board();
                 board.prepareBoard();
             }
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             board = new Board();
             board.prepareBoard();
             System.out.println("IOE error: didn't retrieve board/player");
         }
-
     }
     
 }

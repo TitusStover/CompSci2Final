@@ -1,18 +1,11 @@
 import java.io.Serializable;
 
 public class Board implements Serializable {
-    private static char[][] board = new char[6][7];
+    private static final long serialVersionUID = 1L; // Add serialVersionUID for versioning
+    private char[][] board = new char[6][7]; // Make this non-static
 
     public Board() {
-
-        // for every row in the board
-        for (int r = 0; r < board.length; r++) {
-            // for every column in the board
-            for (int c = 0; c < board[r].length; c++) {
-                // set the space to '-'
-                board[r][c] = '-';
-            }
-        }
+        prepareBoard();
     }
 
     // reset the board
@@ -28,34 +21,16 @@ public class Board implements Serializable {
     }
 
     // print the board to the screen
-    @Override public String toString() {
-        String outputString = "";
-
-
-        // for every row in board
-        for (int i = 0; i <= board.length; i++) {
-            // print the number corrisponding with a move
-            outputString = outputString + (i+1);
-            // print a space
-            outputString = outputString + " ";
-        }
-
-        // print an empty line
-        outputString = outputString + "\n";
-        // for every row in board
-        for (int r = 0; r < board.length; r++) {
-            // for every column in board
-            for (int c = 0; c < board[r].length; c++) {
-                // print the value of board at the row and column
-                outputString = outputString + board[r][c];
-                // print a space
-                outputString = outputString + " ";
+    @Override 
+    public String toString() {
+        StringBuilder outputString = new StringBuilder("1 2 3 4 5 6 7\n");
+        for (char[] row : board) {
+            for (char cell : row) {
+                outputString.append(cell).append(" ");
             }
-            // print an empty line
-            outputString = outputString + "\n";
+            outputString.append("\n");
         }
-
-        return outputString;
+        return outputString.toString();
     }
 
     // Set a space on the board to the corresponding player's symbol
@@ -65,33 +40,17 @@ public class Board implements Serializable {
         } else if (columnIsFull(move)) {
             throw new InvalidColumnException("Your move must be in an empty space.");
         }
-        int row = -1;
-        // for every row in board
-        for (int r = 0; r < board.length; r++) {
-            if (!(board[r][move - 1] == 'X' || board[r][move - 1] == 'O')) { // if the space at r does not have a move
-                // set row to r
-                row = r;
+        for (int r = board.length - 1; r >= 0; r--) {
+            if (board[r][move - 1] == '-') {
+                board[r][move - 1] = (player == 1) ? 'X' : 'O';
+                return;
             }
-        }
-
-
-        if (player == 1) {// if it's player one's turn
-            // set the space to X
-            board[row][move - 1] = 'X';
-        } else { // if it's player two's turn
-            // set the space to O
-            board[row][move - 1] = 'O';
         }
     }
 
     // checks if the column is full
     public boolean columnIsFull(int move) {
-
-        if (board[0][move - 1] == 'X' || board[0][move - 1] == 'O') { //  if the last space in the move's column is taken
-            return true;
-        } else { // if the last space in the move's column isn't taken
-            return false;
-        }
+        return board[0][move - 1] != '-';
     }
 
     // checks to see if there is a horizontal win

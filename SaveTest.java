@@ -10,7 +10,7 @@ class SaveTest  {
     public static void main(String[] args) {
         SaveGame saver = new SaveGame();
 
-    System.out.println(saver.retrieveGameBoard().toString());
+    //System.out.println(saver.retrieveGameBoard().toString());
     System.out.println(saver.retrieveGamePlayer());
     }
     
